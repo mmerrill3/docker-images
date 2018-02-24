@@ -1,27 +1,15 @@
-#Copyright (c) 2014-2017 Oracle and/or its affiliates. All rights reserved.
-#
-#Licensed under the Universal Permissive License v 1.0 as shown at http://oss.oracle.com/licenses/upl.
-#
-# WebLogic on Docker Default Domain
-#
-# Domain, as defined in DOMAIN_NAME, will be created in this script. Name defaults to 'base_domain'.
-#
-# Since : October, 2014
-# Author: bruno.borges@oracle.com
-# ==============================================
-domain_name  = os.environ.get("DOMAIN_NAME", "base_domain")
+domain_name  = os.environ.get("DOMAIN_NAME", "uber")
 admin_name  = os.environ.get("ADMIN_NAME", "AdminServer")
 admin_username  = os.environ.get("ADMIN_USERNAME", "weblogic")
 admin_pass  = "ADMIN_PASSWORD"
 admin_port   = int(os.environ.get("ADMIN_PORT", "7001"))
-domain_path  = '/u01/oracle/user_projects/domains/%s' % domain_name
-production_mode = os.environ.get("PRODUCTION_MODE", "prod")
+domain_path = os.environ.get("DOMAIN_HOME", '/u01/oracle/user_projects/domains/%s' % domain_name)
+production_mode = os.environ.get("PRODUCTION_MODE", "dev")
 
 print('domain_name     : [%s]' % domain_name);
 print('admin_port      : [%s]' % admin_port);
 print('domain_path     : [%s]' % domain_path);
 print('production_mode : [%s]' % production_mode);
-print('admin password  : [%s]' % admin_pass);
 print('admin name      : [%s]' % admin_name);
 print('admin username  : [%s]' % admin_username);
 
@@ -34,7 +22,7 @@ setOption('DomainName', domain_name)
 
 # Disable Admin Console
 # --------------------
-# cmo.setConsoleEnabled(false)
+cmo.setConsoleEnabled(false)
 
 # Configure the Administration Server and SSL port.
 # =========================================================
@@ -42,6 +30,12 @@ cd('/Servers/AdminServer')
 set('Name', admin_name)
 set('ListenAddress', '')
 set('ListenPort', admin_port)
+set('TunnelingEnabled', 'true')
+set('ExternalDNSName', 'wls-uber.k8s.ctnrva0.dev.vonagenetworks.net')
+logMBean = create('AdminServer', 'Log')
+logMBean.setRedirectStderrToServerLogEnabled(0)
+logMBean.setRedirectStdoutToServerLogEnabled(0) 
+logMBean.setLog4jLoggingEnabled(1)
 
 # Define the user password for weblogic
 # =====================================
@@ -75,3 +69,4 @@ closeTemplate()
 # Exit WLST
 # =========
 exit()
+

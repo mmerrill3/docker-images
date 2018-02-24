@@ -1,0 +1,12 @@
+FROM oracle/weblogic:12.2.1.3-generic
+
+# Maintainer
+# ----------
+MAINTAINER Michael Merrill <michael.merrill@vonage.com>
+
+COPY --chown=oracle:oracle applications ${DOMAIN_HOME}/autodeploy
+COPY --chown=oracle:oracle jks ${DOMAIN_HOME}/jks
+COPY --chown=oracle:oracle container-scripts/startDomain.sh container-scripts/create-wls-datasources.py ${ORACLE_HOME}/
+
+# Define default command to start script.
+CMD ${ORACLE_HOME}/startDomain.sh
