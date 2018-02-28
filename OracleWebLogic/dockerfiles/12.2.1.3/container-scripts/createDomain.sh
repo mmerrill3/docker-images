@@ -31,7 +31,7 @@ echo "username=${ADMIN_USERNAME}" > /u01/oracle/user_projects/domains/$DOMAIN_NA
 echo "password=$s" >> /u01/oracle/user_projects/domains/$DOMAIN_NAME/servers/AdminServer/security/boot.properties 
 ln -s /u01/oracle/wlserver/server/lib/wllog4j.jar /u01/oracle/user_projects/domains/$DOMAIN_NAME/lib/wllog4j.jar
 ln -s /u01/oracle/oracle_common/modules/fmwplatform/common/lcmagent/jetty-runner.jar /u01/oracle/user_projects/domains/$DOMAIN_NAME/lib/jetty-runner.jar
-curl -s http://central.maven.org/maven2/log4j/log4j/1.2.12/log4j-1.2.12.jar > /u01/oracle/user_projects/domains/$DOMAIN_NAME/lib/log4j-1.2.9.jar
+curl -s http://central.maven.org/maven2/log4j/log4j/1.2.12/log4j-1.2.12.jar > /u01/oracle/user_projects/domains/$DOMAIN_NAME/lib/log4j-1.2.12.jar
 curl -s http://central.maven.org/maven2/velocity/velocity/1.4/velocity-1.4.jar > /u01/oracle/user_projects/domains/$DOMAIN_NAME/lib/velocity-1.4.jar
 curl -s http://central.maven.org/maven2/com/jamonapi/jamon/2.4/jamon-2.4.jar > /u01/oracle/user_projects/domains/$DOMAIN_NAME/lib/jamon-2.4.jar
 fi
