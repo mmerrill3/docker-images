@@ -27,7 +27,7 @@ ENV DOMAIN_HOME=/u01/oracle/user_projects/domains/${DOMAIN_NAME} \
        
 # Copy scripts
 #-------------
-COPY --chown=oracle:oracle container-scripts/createDomain.sh container-scripts/create-wls-domain.py container-scripts/log4j.xml ${ORACLE_HOME}/
+COPY --chown=oracle:oracle container-scripts/createDomain.sh container-scripts/create-wls-domain.py ${ORACLE_HOME}/
 
 # Environment variables required for this build (do NOT change)
 # -------------------------------------------------------------
@@ -64,8 +64,8 @@ ENV PATH=$PATH:/usr/java/default/bin:$ORACLE_HOME/oracle_common/common/bin:$ORAC
 # ------------------------------------------------------------  
 ENV DOMAIN_HOME=${ORACLE_HOME}/user_projects/domains/${DOMAIN_NAME} \
     USER_MEM_ARGS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap" \
-    JAVA_OPTIONS="-Djava.security.egd=file:/dev/./urandom -Dweblogic.security.disableNullCipher=true -Dweblogic.security.SSL.allowUnencryptedNullCipher=false -Dweblogic.security.SSL.ignoreHostnameVerification=true -Duser.timezone=UTC -Dweblogic.log.Log4jLoggingEnabled=true" \
-    LOG4J_CONFIG_FILE="${ORACLE_HOME}/log4j.xml"
+    JAVA_OPTIONS="-Djava.security.egd=file:/dev/./urandom -Dweblogic.security.disableNullCipher=true -Dweblogic.security.SSL.allowUnencryptedNullCipher=false -Dweblogic.security.SSL.ignoreHostnameVerification=true -Duser.timezone=UTC -Dweblogic.log.Log4jLoggingEnabled=true"
+ENV LOG4J_CONFIG_FILE="${DOMAIN_HOME}/properties/log4j.properties"
 ENV JAVA_OPTIONS="${JAVA_OPTIONS} -Dweblogic.security.TrustKeyStoreType=CustomTrust -Dweblogic.security.SSL.trustedCAKeyStore=${DOMAIN_HOME}/jks/VonageTrust.jks"
 ENV EXT_PRE_CLASSPATH=${DOMAIN_HOME}/properties
 

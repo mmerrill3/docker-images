@@ -1,6 +1,6 @@
 APPNAME = wls-uber
 REGISTRY = 080385600816.dkr.ecr.us-east-1.amazonaws.com
-TAG = 0.0.13
+TAG = 0.0.15
 LOGIN:=$(shell aws ecr get-login --no-include-email)
 
 all : clean push
