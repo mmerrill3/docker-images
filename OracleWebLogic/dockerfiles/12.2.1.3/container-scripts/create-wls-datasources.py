@@ -8,6 +8,8 @@ admin_pass  = "ADMIN_PASSWORD"
 admin_port   = int(os.environ.get("ADMIN_PORT", "7001"))
 domain_path  = '/u01/oracle/user_projects/domains/%s' % domain_name
 production_mode = os.environ.get("PRODUCTION_MODE", "dev")
+external_dns_name = os.environ.get("EXTERNAL_DNS_NAME", "wls-uber.va0.ctnr.dev.vonagenetworks.net")
+
 
 propInputStream = FileInputStream(domain_path + "/datasources/wls-uber-datasources.properties")
 configProps = Properties()
@@ -19,7 +21,8 @@ totalDataSources=configProps.get("DS_TOTAL")
 readDomain("/u01/oracle/user_projects/domains/" + domain_name)
 
 
-#print "[Info]: Creating DataSources .."
+cd('/Servers/AdminServer')
+set('ExternalDNSName', external_dns_name)
 
 i=1
 while (i <= int(totalDataSources)) :
