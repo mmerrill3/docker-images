@@ -10,7 +10,6 @@ domain_path  = '/u01/oracle/user_projects/domains/%s' % domain_name
 production_mode = os.environ.get("PRODUCTION_MODE", "dev")
 external_dns_name = os.environ.get("EXTERNAL_DNS_NAME", "wls-uber.va0.ctnr.dev.vonagenetworks.net")
 
-
 propInputStream = FileInputStream(domain_path + "/datasources/wls-uber-datasources.properties")
 configProps = Properties()
 configProps.load(propInputStream)
@@ -22,8 +21,8 @@ readDomain("/u01/oracle/user_projects/domains/" + domain_name)
 
 
 cd('/Servers/AdminServer')
-set('ExternalDNSName', external_dns_name)
-
+set('ExternalDNSName', external_dns_name) 
+    
 i=1
 while (i <= int(totalDataSources)) :
     try:

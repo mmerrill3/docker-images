@@ -23,6 +23,9 @@ wlst.sh -skipWLSModuleScanning /u01/oracle/create-wls-datasources.py
 
 ${DOMAIN_HOME}/bin/setDomainEnv.sh
 
+# Start the jobs to run immediately after the domain starts (i.e. add the monitor user)
+./postInstall.sh &
+
 # Start WLS Server in development mode, i.e. autoDeploy apps
 ${DOMAIN_HOME}/bin/startWebLogic.sh
 
