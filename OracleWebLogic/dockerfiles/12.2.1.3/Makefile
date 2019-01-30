@@ -41,7 +41,8 @@ get-apps:
 	wget http://maven.dev.s.vonagenetworks.net:8080/nexus/content/repositories/Vonage-m2/com/vonage/weblogic/usageeventbpa/$(WEBLOGIC_APP_VERSION)/usageeventbpa-$(WEBLOGIC_APP_VERSION).ear -O applications/usageeventbpa.ear
 	wget http://maven.dev.s.vonagenetworks.net:8080/nexus/content/repositories/Vonage-m2/com/vonage/weblogic/voicemail-webservice/$(WEBLOGIC_APP_VERSION)/voicemail-webservice-$(WEBLOGIC_APP_VERSION).war -O applications/voicemail-webservice.war
 	wget http://maven.dev.s.vonagenetworks.net:8080/nexus/content/repositories/Vonage-m2/com/vonage/weblogic/core-services/$(WEBLOGIC_APP_VERSION)/core-services-$(WEBLOGIC_APP_VERSION).ear -O applications/core-services.ear
-	cp wls-exporter.war applications
+	wget http://maven.dev.s.vonagenetworks.net:8080/nexus/content/repositories/Vonage-m2/com/vonage/weblogic/wls-exporter/$(WEBLOGIC_APP_VERSION)/wls-exporter-$(WEBLOGIC_APP_VERSION).war -O applications/wls-exporter.war
+	
 container-base:
 	exec ${LOGIN}
 	docker build -f Dockerfile.generic -t oracle/weblogic:12.2.1.3-generic .	
