@@ -42,7 +42,7 @@ COPY --chown=oracle:oracle $FMW_PKG install.file oraInst.loc /u01/
 # ------------------------------------------------------------
 USER 500
 
-RUN cd /u01 && $JAVA_HOME/bin/jar xf /u01/$FMW_PKG && cd - && \
+RUN cd /u01 && ${JAVA_HOME}/bin/jar xf /u01/$FMW_PKG && cd - && \
     ls /u01 && \
     $JAVA_HOME/bin/java -jar /u01/$FMW_JAR -silent -responseFile /u01/install.file -invPtrLoc /u01/oraInst.loc -jreLoc $JAVA_HOME -ignoreSysPrereqs -force -novalidation ORACLE_HOME=$ORACLE_HOME INSTALL_TYPE="WebLogic Server" && \
     rm /u01/$FMW_JAR /u01/$FMW_PKG /u01/oraInst.loc /u01/install.file && \
