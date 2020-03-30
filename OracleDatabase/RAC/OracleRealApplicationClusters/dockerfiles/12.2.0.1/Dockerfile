@@ -39,6 +39,7 @@ ENV SETUP_LINUX_FILE="setupLinuxEnv.sh" \
     INSTALL_FILE_1="linuxx64_12201_grid_home.zip" \
     GRID_INSTALL_RSP="grid.rsp" \
     GRID_SETUP_FILE="setupGrid.sh" \
+    GRID_HOME_CLEANUP="GridHomeCleanup.sh" \
     FIXUP_PREQ_FILE="fixupPreq.sh" \
     INSTALL_GRID_BINARIES_FILE="installGridBinaries.sh" \
     INSTALL_GRID_PATCH="applyGridPatch.sh" \
@@ -74,6 +75,9 @@ ENV SETUP_LINUX_FILE="setupLinuxEnv.sh" \
     MULTI_NODE_INSTALL="MultiNodeInstall.py" \ 
     RESET_OS_PASSWORD="resetOSPassword.sh" \
     MULTI_NODE_INSTALL="MultiNodeInstall.py" \
+    ORACLE_HOME_CLEANUP="OracleHomeCleanup.sh" \
+    DB_USER="oracle" \
+    GRID_USER="grid" \
 # COMMON ENV Variable
    FUNCTIONS="functions.sh" \
    COMMON_SCRIPTS="/common_scripts" \
@@ -108,14 +112,14 @@ RUN chmod 755 $INSTALL_SCRIPTS/*.sh  && \
     su  grid -c "$INSTALL_DIR/install/$INSTALL_GRID_BINARIES_FILE EE" && \
     $INVENTORY/orainstRoot.sh && \
     $GRID_HOME/root.sh && \
-    su  grid    -c  "$INSTALL_DIR/install/$INSTALL_GRID_PATCH $GRID_PATCH" && \
-    su  oracle  -c  "$INSTALL_DIR/install/$INSTALL_DB_BINARIES_FILE EE" && \
-    su  grid    -c  "$INSTALL_DIR/install/$SETUPDOCKERORACLEINIT" && \
-    su  oracle  -c  "$INSTALL_DIR/install/$ENABLE_RAC_FILE" && \
+    su  ${GRID_USER}    -c  "$INSTALL_DIR/install/$INSTALL_GRID_PATCH $GRID_PATCH" && \
+    su  ${DB_USER}  -c  "$INSTALL_DIR/install/$INSTALL_DB_BINARIES_FILE EE" && \
+    su ${GRID_USER}    -c  "$INSTALL_DIR/install/$SETUPDOCKERORACLEINIT" && \
+    su ${DB_USER}  -c  "$INSTALL_DIR/install/$ENABLE_RAC_FILE" && \
     $INVENTORY/orainstRoot.sh && \
     $DB_HOME/root.sh && \
-    su  grid -c "$INSTALL_SCRIPTS/$GRID_HOME_CLEANUP" && \
-    su  oracle -c "$INSTALL_SCRIPTS/$ORACLE_HOME_CLEANUP" && \
+    su  ${GRID_USER} -c "$INSTALL_SCRIPTS/$GRID_HOME_CLEANUP" && \
+    su  ${DB_USER} -c "$INSTALL_SCRIPTS/$ORACLE_HOME_CLEANUP" && \
     $INSTALL_DIR/install/$FIXUP_PREQ_FILE && \
     rm -rf $INSTALL_DIR/install && \
     sync && \

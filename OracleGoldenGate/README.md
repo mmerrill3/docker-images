@@ -31,12 +31,18 @@ This project provides a Dockerfile tested with:
 - Oracle GoldenGate 12.3.0.1.4 Microservices for Oracle
 - Oracle GoldenGate 18.1.0.0.0 for Oracle
 - Oracle GoldenGate 18.1.0.0.0 Microservices for Oracle
+- Oracle GoldenGate 19.1.0.0.2 for Oracle
+- Oracle GoldenGate 19.1.0.0.2 Microservices for Oracle
 
 To build the images, use the [dockerBuild.sh](dockerBuild.sh) script or follow the instructions for manually building an image.
 
 **IMPORTANT:** To create images for Oracle GoldenGate on Docker, you must use Docker version 17.05.0 or later. You can check the version of Docker on your system with the `docker version` command.
 
 **IMPORTANT:** You must download the installation binaries of Oracle GoldenGate. You only need to provide the binaries for the version you plan to install. The binaries can be downloaded from the [Oracle Technology Network](http://www.oracle.com/technetwork/middleware/goldengate/downloads/index.html). Do not uncompress the Oracle GoldenGate ZIP file. The `dockerBuild.sh` script will handle that for you. You also must have Internet connectivity when building the Docker image for the package manager to perform additional software installations.
+
+**IMPORTANT:** The Docker Base Image should be prepared before you start creating Oracle GoldenGate Docker Image. Please refer the section [Changing the Base Image](https://github.com/oracle/docker-images/tree/master/OracleGoldenGate#changing-the-base-image) regarding the base images.
+
+All shell commands in this document assume the usage of Bash shell.
 
 For more information about Oracle GoldenGate please see the [Oracle GoldenGate 12c On-line Documentation](https://docs.oracle.com/goldengate/c1230/gg-winux/index.html).
 

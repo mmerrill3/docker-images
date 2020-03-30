@@ -1,5 +1,13 @@
 # FAQ: Docker and Oracle Database
 
+## Can I use setup or startup scripts with the Oracle Database image pulled from the Oracle Container Registry or Docker Hub?
+Unfortunately, no. 
+
+Unlike the other pre-built images published by Oracle on both the [Oracle Container Registry](https://container-registry.oracle.com) and [Docker Hub](https://hub.docker.com/search?q=oracle&type=image&image_filter=store), the Oracle Database 12c R2 Standard Edition 2 and Enterprise Edition images are not based on any of the Dockerfiles contained in this repository. If you require the runtime functionality documented in this repository, you will need to build an image from the appropriate Dockerfile. 
+
+You can review the documentation for the published [Oracle Database 12c R2 Standard Edition 2](https://container-registry.oracle.com/pls/apex/f?p=113:4:115514266578664::NO:4:P4_REPOSITORY,AI_REPOSITORY,AI_REPOSITORY_NAME,P4_REPOSITORY_NAME,P4_EULA_ID,P4_BUSINESS_AREA_ID:8,8,Oracle%20Database%20Standard%20Edition%202,Oracle%20Database%20Standard%20Edition%202,1,0&cs=3M7OZKUYUdXrhRcqDYvjcNMWxeKHvx6UsXuvffUQ_Jzxp3L23ABb0HfUj6WwrUFwCIOcQQJi9fvA5cNYNtaZTkw) and [Oracle Database 12c R2 Enterprise Edition](https://container-registry.oracle.com/pls/apex/f?p=113:4:115514266578664::NO:4:P4_REPOSITORY,AI_REPOSITORY,AI_REPOSITORY_NAME,P4_REPOSITORY_NAME,P4_EULA_ID,P4_BUSINESS_AREA_ID:9,9,Oracle%20Database%20Enterprise%20Edition,Oracle%20Database%20Enterprise%20Edition,1,0&cs=3lBoxWZ5InuJuWk8u1uRtc6CDKy3bKfdwUFF4uxS8sl3_E5PEGVWIZxntjcUezVRaePRKf3M8vTVdZifwndd37g) images on the Oracle Container Registry. Reviewing the documentation does not require an Oracle Single Sign-on account.
+
+
 ## How do I change the timezone of my container
 As of Docker 17.06-ce, Docker does not yet provide a way to pass down the `TZ` Unix environment variable from the host to the container. Because of that all containers run in the UTC timezone. If you would like to have your database run in a different timezone you can pass on the `TZ` environment variable within the `docker run` command via the `-e` option. An example would be: `docker run ... -e TZ="Europe/Vienna" oracle/database:12.2.0.1-ee`. Another option would be to specify two read-only volume mounts: `docker run ... -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro oracle/database:12.2.0.1-ee`. This will synchronize the timezone of the the container with that of the Docker host.
 
@@ -19,3 +27,30 @@ This is a Unix filesystem permission issue. Docker by default will map the `uid`
 * Use named volumes
 * Change the ownership of your folder to `54321`
 * Change the permissions of your folder so that the `uid 54321` has write permissions
+
+## ORA-00600: internal error code, arguments: [pesldl03_MMap: errno 1 errmsg Operation not permitted], [], [], [], [], [], [], [], [], [], [], []
+This error happens if you try to use native compilation for PL/SQL but haven't assigned `exec` rights to `/dev/shm`.
+For example, the below would raise the error in such case:
+```
+alter session set plsql_code_type='NATIVE';
+
+create or replace procedure test as
+begin
+   null;
+end;
+/
+```
+Docker, by default, doesn't assign `exec` rights to `/dev/shm` which is where the native compiled code is stored and executed.
+As you don't have execution rights to it, however, you get the error `Operation not permitted`.
+
+Run the container with `-v /dev/shm --tmpfs /dev/shm:rw,exec,size=<yoursize>` instead, the important part being the `exec` in `--tmpfs /dev/shm:rw,exec,size=<yoursize>`.
+Also make sure you assign an appropriate size as the default Docker uses is only 64MB. Assigning 1GB or  more is recommended.
+
+## ORA-12637: Packet receive failed
+When initially connecting to your 19c (or higher) database the client may appear to hang and timeout after a few minutes with: `ORA-12637: Packet receive failed`
+
+Oracle Net 19c will attempt to [automatically detect support for Out Of Band breaks](https://www.oracle.com/pls/topic/lookup?ctx=dblatest&id=GUID-554C0311-68FB-4628-AC8D-C22D8ADDE995) and enable or disable the feature. Some network stacks do not correctly handle this and problems have been seen on _docker-engine-19.03.1.ol-1.0.0.el7_. You may explicitly disable this feature by setting `DISABLE_OOB=ON` in the client's _sqlnet.ora_ file. By default Oracle Instant Client for Linux will use _/<instant_client_path>/network/admin/sqlnet.ora_, _$TNS_ADMIN/sqlnet.ora_ or _~/.sqlnet.ora_. For example you could use
+```
+$ echo "DISABLE_OOB=ON" >> ~/.sqlnet.ora
+```
+For more information configuring _sqlnet.ora_ file see [Database Net Services Reference](https://www.oracle.com/pls/topic/lookup?ctx=dblatest&id=GUID-2041545B-58D4-48DC-986F-DCC9D0DEC642), [Instant Client Installation for Linux](https://www.oracle.com/database/technologies/instant-client/linux-x86-64-downloads.html), [What is DISABLE_OOB (Out Of Band Break)? (Doc ID 373475.1)](https://support.oracle.com/epmos/faces/DocumentDisplay?id=373475.1) and issue #1352
